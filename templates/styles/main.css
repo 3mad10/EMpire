@@ -1,0 +1,119 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+#em-card {
+    grid-area: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.island-element .description {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    white-space: nowrap;
+}
+
+.island-element:hover .description {
+    opacity: 1;
+}
+
+.container {
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 70px 0.5fr 1fr 1fr 1fr;
+    grid-template-areas: 
+    "header header header"
+    ". . ."
+    "top-left . top-right"
+    ". center ."
+    "bottom-left . bottom-right";
+}
+
+.music-card {
+    grid-area: top-right;
+}
+
+.smart-solutions-card {
+    grid-area: bottom-right;
+}
+
+.outfit-card {
+    grid-area: bottom-left;
+}
+
+.island-element {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.island-element > a {
+    position: absolute;
+    width: auto;
+    height: auto;
+    left: 10%;
+}
+
+
+.games-card {
+    grid-area: top-left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 1.5rem;
+    text-decoration: underline overline;
+    grid-area: header;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #010101;
+}   
+
+img {
+    display: block;
+    border-color: #010101;
+    border-width: 4px;
+    border-style: solid;
+    border-radius: 50%;
+    width: 8vw;
+    height: auto;
+}
+
+#em-card img {
+    margin: auto;
+}
+
+svg.wobbly-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    stroke: black;
+    fill: transparent;
+    stroke-width: 2;
+}
