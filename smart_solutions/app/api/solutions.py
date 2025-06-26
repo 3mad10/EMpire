@@ -66,15 +66,37 @@ async def create_solution(*, session: SessionDep, solution_in: SolutionCreate):
 @router.get("/", response_model=list[SolutionRead])
 async def read_solutions(*, session: SessionDep,
                           offset: int = 0,
+                          catagory: str = None,
                           limit: Annotated[int, Query(le=10)] = 10,):
-    
-    query = text("SELECT * FROM solution LIMIT :limit OFFSET :offset")
-    results = session.execute(query, {"limit": limit, "offset": offset})
+    if not catagory:
+        print("taaaaags : ", catagory)
+        query = text("SELECT * FROM solution LIMIT :limit OFFSET :offset")
+        results = session.execute(query, {"limit": limit,
+                                          "offset": offset})
+    else:
+        tags = catagory.split(',')
+        
+        tags_available = [
+            t["name"] for t in session.execute(text("SELECT tag.name FROM tag")).mappings().all()
+        ]
+        tags_tuple = tuple(tag for tag in tags if tag in tags_available)
+        if not tags_tuple:
+            return []  # No valid tags matched
+        query = text("""SELECT DISTINCT solution.* FROM ((solution
+                    INNER JOIN solutiontaglink ON solution.id = solutiontaglink.solution_id)
+                    INNER JOIN tag ON tag.id = solutiontaglink.tag_id) 
+                    WHERE tag.name IN :tags
+                    LIMIT :limit OFFSET :offset""")
+        results = session.execute(query, {"limit": limit,
+                                          "offset": offset,
+                                          "tags": tags_tuple})
+
     rows = results.mappings().all()
     solutions = []
     for row in rows:
         row = dict(row)  # now mutable
         row["tags"] = row["tags"].split(",") if row["tags"] else []
+        row["tags"] = [TagRead(name=tag) for tag in row["tags"]]
         solutions.append(SolutionRead(**row))
 
     return solutions

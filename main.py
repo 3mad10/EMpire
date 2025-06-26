@@ -37,8 +37,9 @@ async def smart_root(req : Request):
         context={"request": req}
     )
 
-smartApi.mount("/images/smart_solutions", StaticFiles(directory="resources/images/smart_solutions"), name= "smart-solutions-images")
-smartApi.mount("/videos/smart_solutions", StaticFiles(directory="resources/videos/smart_solutions"), name= "smart-solutions-videos")
+smartApi.mount("/images/smart_solutions", StaticFiles(directory="resources/images/smart_solutions"), name="smart-solutions-images")
+smartApi.mount("/videos/smart_solutions", StaticFiles(directory="resources/videos/smart_solutions"), name="smart-solutions-videos")
+smartApi.mount("/svg/smart_solutions", StaticFiles(directory="resources/svg/smart_solutions"), name="smart-solutions-svg")
 smartApi.mount("/styles", StaticFiles(directory="templates/styles"), name= "styles")
 app.mount("/smart-solutions", smartApi)
 

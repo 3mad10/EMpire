@@ -1,6 +1,7 @@
 from sqlmodel import Field, SQLModel, Relationship
 import uuid
 from typing import List, Optional
+from smart_solutions.app.models.user import User
 
 
 class Image(SQLModel, table=True):
@@ -26,7 +27,7 @@ class SolutionTagLink(SQLModel, table=True):
 
 class Tag(SQLModel, table=True):
     id: int = Field(primary_key=True)
-    name: str
+    name: str = Field(unique=True)
     solutions: List["Solution"] = Relationship(back_populates="tags",
                                                link_model=SolutionTagLink)
 
@@ -40,6 +41,7 @@ class Solution(SQLModel, table=True):
     video: List[Video] = Relationship(back_populates="solution")
     tags: List[Tag] = Relationship(back_populates="solutions",
                                    link_model=SolutionTagLink)
+    owner: User = Relationship(back_populates="solutions")
 
 
 Image.update_forward_refs()

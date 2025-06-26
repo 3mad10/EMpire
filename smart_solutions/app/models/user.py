@@ -15,3 +15,8 @@ class User(SQLModel, table=True):
     country: str = Field(nullable=True)
     balance: int = Field(nullable=False, default=0)
     is_admin: bool = Field(nullable=False, default=False)
+    is_active: bool = True
+
+
+class TokenPayload(SQLModel):
+    sub: str | None = None
