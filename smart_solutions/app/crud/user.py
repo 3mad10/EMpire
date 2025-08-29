@@ -1,6 +1,6 @@
 import uuid
 from typing import Any
-from sqlmodel import Session
+from sqlmodel import Session, select
 from sqlalchemy import text
 from smart_solutions.app.models.user import User
 from smart_solutions.app.core.security import (
@@ -9,9 +9,9 @@ from smart_solutions.app.core.security import (
 )
 from smart_solutions.app.schemas.user import (
     UserCreate,
-    UserRead
+    UserRead,
+    UserPublic
     )
-
 
 def insert_user(*, session: Session, 
                 user_create: User) -> UserCreate:
@@ -29,14 +29,23 @@ def get_user_by_email(*, session: Session,
                       email: str) -> UserRead | None:
     query = text("SELECT * FROM user WHERE email = :user_email")
     session_user = session.execute(query, {"user_email": email}).first()
+    print(session_user)
     return session_user
+
+def get_user_by_id(*, session: Session, 
+                      id: uuid.UUID) -> UserPublic | None:
+    user = session.execute(select(User).where(User.id == id)).first()
+    print("user : ", user)
+    return UserPublic.model_validate(user[0])
 
 
 def authenticate(*, session: Session, 
                  email: str, password: str) -> UserRead | None:
+    print("email : ", email)
+    print("password : ", password)
     db_user = get_user_by_email(session=session, email=email)
     if not db_user:
         return None
-    if not verify_password(password, db_user.hashed_password):
+    if not verify_password(password, db_user.password):
         return None
     return db_user

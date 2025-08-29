@@ -1,13 +1,15 @@
 from sqlmodel import Field, SQLModel, Relationship
 import uuid
-from typing import List, Optional
-from smart_solutions.app.models.user import User
+from typing import List, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from smart_solutions.app.models.user import User
 
 
 class Image(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     solution_id: uuid.UUID = Field(foreign_key="solution.id")
-    solution: Optional["Solution"] = Relationship(back_populates="image")
+    solution: Optional["Solution"] = Relationship(back_populates="images")
     url: str
     name: str
 
@@ -15,7 +17,7 @@ class Image(SQLModel, table=True):
 class Video(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     solution_id: uuid.UUID = Field(foreign_key="solution.id")
-    solution: Optional["Solution"] = Relationship(back_populates="video")
+    solution: Optional["Solution"] = Relationship(back_populates="videos")
     url: str
     name: str
 
@@ -37,12 +39,12 @@ class Solution(SQLModel, table=True):
                           primary_key=True)
     name: str = Field(min_length=3, nullable=False)
     description: str = Field(nullable=False)
-    image: List[Image] = Relationship(back_populates="solution")
-    video: List[Video] = Relationship(back_populates="solution")
+    images: List[Image] = Relationship(back_populates="solution")
+    videos: List[Video] = Relationship(back_populates="solution")
     tags: List[Tag] = Relationship(back_populates="solutions",
                                    link_model=SolutionTagLink)
-    owner: User = Relationship(back_populates="solutions")
-
+    owner: "User" = Relationship(back_populates="solutions")
+    owner_id: uuid.UUID = Field(foreign_key="user.id")
 
 Image.update_forward_refs()
 Video.update_forward_refs()

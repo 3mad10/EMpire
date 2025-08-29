@@ -1,7 +1,10 @@
 from sqlmodel import Field, SQLModel, Relationship
 import uuid
 from pydantic import EmailStr
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from smart_solutions.app.models.solution import Solution
 
 class User(SQLModel, table=True):
     id: uuid.UUID = Field(primary_key=True, default_factory=uuid.uuid4)
@@ -15,8 +18,15 @@ class User(SQLModel, table=True):
     country: str = Field(nullable=True)
     balance: int = Field(nullable=False, default=0)
     is_admin: bool = Field(nullable=False, default=False)
-    is_active: bool = True
+    is_active: bool = Field(nullable=False, default=True)
+    solutions: list["Solution"] = Relationship(back_populates="owner")
 
 
 class TokenPayload(SQLModel):
     sub: str | None = None
+
+
+# JSON payload containing access token
+class Token(SQLModel):
+    access_token: str
+    token_type: str = "bearer"

@@ -27,9 +27,26 @@ class UserCreate(BaseModel):
     @field_validator('country')
     def validate_country(cls, v):
         allowed_countries = settings.ALLOWED_COUNTRIES
+        # TODO Improve validation by using a binary search or another algorithm as the countries are sorted
         if v not in allowed_countries:
             raise ValueError(f"Country '{v}' is not in the list of allowed countries.")
         return v
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "name": "Mohamed",
+                    "email": "m.emad1@gmail.com",
+                    "password": "12345678",
+                    "phone_number": "201004282209",
+                    "address": "Egypt second floor",
+                    "city": "Cairo",
+                    "country": "Egypt"
+                 }
+            ]
+        }
+    }
 
 
 class UserRead(BaseModel):
@@ -37,6 +54,9 @@ class UserRead(BaseModel):
     name: str
     email: EmailStr = Field(max_length=255)
     is_admin: bool = False
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class UserPublic(BaseModel):
@@ -44,6 +64,9 @@ class UserPublic(BaseModel):
     name: str
     email: EmailStr = Field(max_length=255)
     is_admin: bool = False
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class UserUpdate(BaseModel):
@@ -53,6 +76,9 @@ class UserUpdate(BaseModel):
     address: Optional[str] = Field(max_length=128)
     city: Optional[str] = Field(max_length=128)
     country: Optional[str] = Field()
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class UpdatePassword(BaseModel):

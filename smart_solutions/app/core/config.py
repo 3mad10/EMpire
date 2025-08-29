@@ -24,9 +24,10 @@ class Settings(BaseSettings):
     MYSQL_PASSWORD: str = ""
     MYSQL_DB: str = ""
     SECRET_KEY: str = secrets.token_urlsafe(32)
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     ALLOWED_TAGS: list[str] = ["detection", "segmentation", "classification", "tracking"]
     ALLOWED_COUNTRIES: list[str] = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
-                                   "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
+                                    "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
                                     "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize",
                                     "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil",
                                     "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",

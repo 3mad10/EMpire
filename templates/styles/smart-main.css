@@ -383,7 +383,6 @@ textarea:focus, input:focus{
 }
 
 .sub-system:hover {
-  transform: scale(1.03);
   transition: transform 0.2s ease-in-out;
 }
 
