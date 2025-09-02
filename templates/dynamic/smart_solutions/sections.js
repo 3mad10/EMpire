@@ -83,7 +83,7 @@ function createSubElementContainer(element) {
     header.className = "sub-solution-header";
     header.innerText = element.name
         .replace(/-/g, " ")
-        .replace(/\b\w/g, c => c.toUpperCase());
+        .replace(/\b\w/g, c => c.toUpperCase()) + " Systems";
 
     // Scroll buttons
     const leftBtn = document.createElement("button");
@@ -122,24 +122,27 @@ function createSubElementContainer(element) {
 export function createSystemsSections(mainContainer) {
     console.log(mainContainer);
 
-    const subsystem = document.createElement("div");
-    subsystem.className = "solution-section";
+    subSystems.forEach((section) => {
+        const subsystem = document.createElement("div");
+        subsystem.className = "solution-section";
+        // Section Header (capitalize words, replace "-")
+        const subSolutionHeader = document.createElement("div");
+        let subSolutionName = section.name + " Systems";
+        subSolutionName = subSolutionName
+            .replace(/-/g, " ")
+            .replace(/\b\w/g, c => c.toUpperCase());
+        subSolutionHeader.innerText = subSolutionName;
+        subSolutionHeader.className = "section-header";
 
-    // Section Header (capitalize words, replace "-")
-    const subSolutionHeader = document.createElement("div");
-    let subSolutionName = subSystems[0].name;
-    subSolutionName = subSolutionName
-        .replace(/-/g, " ")
-        .replace(/\b\w/g, c => c.toUpperCase());
-    subSolutionHeader.innerText = subSolutionName;
-    subSolutionHeader.className = "section-header";
+        subsystem.appendChild(subSolutionHeader);
+        
+        section.subElements.forEach(sub => {
+            subsystem.appendChild(createSubElementContainer(sub));
+        })
 
-    subsystem.appendChild(subSolutionHeader);
-
-    subSystems[0].subElements.forEach(sub => {
-        subsystem.appendChild(createSubElementContainer(sub));
+        subsystem.id = section.name;
+        mainContainer.appendChild(subsystem);
     })
 
-    subsystem.id = subSystems[0].name;
-    mainContainer.appendChild(subsystem);
+    
 }

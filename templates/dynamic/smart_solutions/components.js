@@ -1,5 +1,5 @@
 import { subSystems, SOLNLIMIT, SOLNINITIALOFFSET } from './config.js';
-import {subsystemListOnHoverEvent, subsystemListOnMouseLeave} from './vidEventHandlers.js'
+import {subsystemListOnHoverEvent, subsystemListOnMouseLeave} from './eventHandlers.js'
 
 
 function createSystemShort(trailer, backgroundImage) {
@@ -68,7 +68,119 @@ function createSystemSubElements(subElements, videoContainerElement, defaultVide
     return elementsList;
 }
 
+function generateComlementaryLines() {
+  const svg = document.getElementById("circuitSvg");
 
+  // Get width, height and calculate needed size and coordinates
+    const width = svg.clientWidth;
+    const height = svg.clientHeight;
+    const rectSize = svg.clientWidth / 8; // Or svg.clientHeight / 8 depending on desired aspect
+    const centerX = width / 2;
+    const centerY = height / 2;
+
+    // Now define mainCircutLines using the calculated values
+    const rightLines = [
+        // Right between main up and horizontal
+        {
+            startX: centerX + rectSize / 2,
+            startY: centerY - 0.4 * (rectSize / 2),
+            movementsXOffsets: [width /8, 0, width],
+            movementsYOffsets: [0, -width / 16, 0],
+        },
+        // Right between main up and horizontal
+        {
+            startX: centerX + rectSize / 2,
+            startY: centerY - 0.2 * (rectSize / 2),
+            movementsXOffsets: [width /6, 0, width],
+            movementsYOffsets: [0, -width / 30, 0],
+        },
+        // Horizontal right
+        {
+            startX: centerX + rectSize / 2,
+            startY: centerY,
+            movementsXOffsets: [width, 0, 0],
+            movementsYOffsets: [0, - width / 15, 0],
+        },
+        // Right between main down and horizontal
+        {
+            startX: centerX + rectSize / 2,
+            startY: centerY + 0.2 * (rectSize / 2),
+            movementsXOffsets: [width /6, 0, width],
+            movementsYOffsets: [0, width / 30, 0],
+        },
+        // Right between main up and horizontal
+        {
+            startX: centerX + rectSize / 2,
+            startY: centerY + 0.4 * (rectSize / 2),
+            movementsXOffsets: [width /8, 0, width],
+            movementsYOffsets: [0, width / 20, 0],
+        },
+    ];
+
+    const leftLines = rightLines.map(line => {
+      return {
+        startX: centerX - rectSize / 2, // start from left edge of rect
+        startY: line.startY,             // same vertical positions
+        movementsXOffsets: line.movementsXOffsets.map((offset, i) => {
+          // flip direction: go left instead of right
+          if (i === line.movementsXOffsets.length - 1) {
+            // last step: reach left border
+            return - (centerX - rectSize / 2) - (offset > 0 ? offset : 0);
+          }
+          return -offset;
+        }),
+        movementsYOffsets: line.movementsYOffsets, // same vertical wiggles
+      };
+    });
+
+    const topLines = [
+    // top center
+      {
+          startX: centerX,
+          startY: centerY - rectSize / 2,
+          movementsXOffsets: [0, 0, width],
+          movementsYOffsets: [-width, 0, 0],
+      },
+      // Right
+      {
+          startX: centerX + rectSize / 3,
+          startY: centerY - rectSize / 2,
+          movementsXOffsets: [0, width / 15, 0, width / 2],
+          movementsYOffsets: [-width / 30, 0, -width / 7, 0],
+      },
+      {
+          startX: centerX + rectSize / 6,
+          startY: centerY - rectSize / 2,
+          movementsXOffsets: [0, width / 22, 0, width / 2],
+          movementsYOffsets: [-width / 20, 0, -width / 3, 0],
+      },
+      // Left
+      {
+          startX: centerX - rectSize / 3,
+          startY: centerY - rectSize / 2,
+          movementsXOffsets: [0, -width / 15, 0, -width / 2],
+          movementsYOffsets: [-width / 30, 0, -width / 7, 0],
+      },
+      {
+          startX: centerX - rectSize / 6,
+          startY: centerY - rectSize / 2,
+          movementsXOffsets: [0, -width / 22, 0, -width / 2],
+          movementsYOffsets: [-width / 20, 0, -width / 3, 0],
+      },
+    ]
+  
+    const bottomLines = topLines.map(line => {
+      return {
+        startX: line.startX, // same X positions
+        startY: centerY + rectSize / 2, // reflected starting Y (bottom of rect)
+        movementsXOffsets: [...line.movementsXOffsets], // same horizontal movements
+        movementsYOffsets: line.movementsYOffsets.map(offset => -offset), // flip vertical direction
+      };
+    });
+
+  const randomLines = [...rightLines, ...leftLines, ...topLines, ...bottomLines]
+  return randomLines;
+}
 export function createSubSystems(subSystems, width) {
     const systemsDiv = document.querySelector('#systems');
     systemsDiv.innerHTML = '';
@@ -113,15 +225,19 @@ export function createMainLines(circuitLines) {
     const svg = document.getElementById("circuitSvg");
     circuitLines.forEach(LineConfig => {
         const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        line.setAttribute("d", `M ${LineConfig.startX} ${LineConfig.startY} L ${LineConfig.startX + LineConfig.movementsXOffsets[0]} ${LineConfig.startY + LineConfig.movementsYOffsets[0]} l ${LineConfig.movementsXOffsets[1]} ${LineConfig.movementsYOffsets[1]} l ${LineConfig.movementsXOffsets[2]} ${LineConfig.movementsYOffsets[2]}`)
-        line.setAttribute("stroke", "#0ff");
+        let path = `M ${LineConfig.startX} ${LineConfig.startY} L ${LineConfig.startX + LineConfig.movementsXOffsets[0]} ${LineConfig.startY + LineConfig.movementsYOffsets[0]} `
+        for(let i = 1; i < LineConfig.movementsXOffsets.length; i++) {
+          path += `l ${LineConfig.movementsXOffsets[i]} ${LineConfig.movementsYOffsets[i]} `
+        }
+        line.setAttribute("d", path);
+        // line.setAttribute("d", `M ${LineConfig.startX} ${LineConfig.startY} L ${LineConfig.startX + LineConfig.movementsXOffsets[0]} ${LineConfig.startY + LineConfig.movementsYOffsets[0]} l ${LineConfig.movementsXOffsets[1]} ${LineConfig.movementsYOffsets[1]} l ${LineConfig.movementsXOffsets[2]} ${LineConfig.movementsYOffsets[2]}`)
+        line.setAttribute("stroke", "var(--primary)");
         line.setAttribute("stroke-width", "2");
         line.setAttribute("fill", "None");
-        line.setAttribute("filter", "url(#glow)");
+        // line.setAttribute("filter", "url(#glow)");
         svg.appendChild(line);
     });
 }
-
 
 
 export function drawCircuit(svg, mainCircutLines) {
@@ -139,6 +255,7 @@ export function drawCircuit(svg, mainCircutLines) {
       const rectSize = svg.clientWidth / 8;
       const centerX = width / 2;
       const centerY = height / 2;
+      let circleXCenter = 0;
 
       // Create rectangle according to the window/svg size
       const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -150,10 +267,25 @@ export function drawCircuit(svg, mainCircutLines) {
       rect.setAttribute("filter", "url(#glow)");
       svg.appendChild(rect);
 
-      // Create main lines
-      createMainLines(mainCircutLines, svg);
+      const M = document.createElementNS(SVG_NS, "path");
+      M.setAttribute("d", `
+        M ${centerX - rectSize * 0.3} ${centerY + rectSize * 0.3}
+        V ${centerY - rectSize * 0.3}
+        L ${centerX} ${centerY + rectSize * 0.2}
+        L ${centerX + rectSize * 0.3} ${centerY - rectSize * 0.3}
+        V ${centerY + rectSize * 0.3}
+      `);
+      M.setAttribute("stroke", "var(--primary)");
+      M.setAttribute("stroke-width", "3");
+      M.setAttribute("fill", "none");
+      M.setAttribute("filter", "url(#glow)");
+      svg.appendChild(M);
 
-      const systems = document.querySelector("#systems");
+      const compCircuitLines = generateComlementaryLines();
+      // Create main lines
+      createMainLines(mainCircutLines);
+
+      createMainLines(compCircuitLines);
 
       subSystems.forEach((val, i) => {
         const LineConfig = mainCircutLines[i];
@@ -162,15 +294,27 @@ export function drawCircuit(svg, mainCircutLines) {
         console.log(`SUBSYSTEM ${i}`)
         console.log(`endX : ${endX}`)
         console.log(`endY : ${endY}`)
-
+        
         if (endX < width/2) {
-          console.log(`position left endX = ${endX}`)
-          subSystems[i].position = {x : endX - 0.05 * rectSize, y : endY - Math.abs(LineConfig.movementsYOffsets[1]) / 2};
+          circleXCenter = endX - 0.04 * rectSize;
+          subSystems[i].position = {x : endX - 0.1 * rectSize, y : endY - Math.abs(LineConfig.movementsYOffsets[1]) / 2};
         } else{
-          subSystems[i].position = {x : endX + 0.05 * rectSize, y : endY - Math.abs(LineConfig.movementsYOffsets[1]) / 2};
+          circleXCenter = endX + 0.04 * rectSize;
+          subSystems[i].position = {x : endX + 0.1 * rectSize, y : endY - Math.abs(LineConfig.movementsYOffsets[1]) / 2};
         }
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", circleXCenter);
+        circle.setAttribute("cy", endY);
+        circle.setAttribute("r", 8);   // radius
+        circle.setAttribute("fill", "none");  // keep center transparent
+        circle.setAttribute("stroke", "var(--primary)");
+        circle.setAttribute("stroke-width", "2");
+
+        svg.appendChild(circle);
       });
 
+      
       // Create vision systems div
       createSubSystems(subSystems, width);
 
