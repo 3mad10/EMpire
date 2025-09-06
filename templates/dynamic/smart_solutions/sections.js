@@ -3,6 +3,8 @@ import { getSolutionData} from './routes.js';
 
 // Builds each solution card
 function createSolution(solutionData) {
+    console.log("Solutionnnnnnnn : ")
+    console.log(solutionData)
     const solnCard = document.createElement('div');
     solnCard.className = "soln-card";
 
@@ -11,8 +13,7 @@ function createSolution(solutionData) {
     shorts.className = "soln-card-shorts";
 
     const link = document.createElement('a');
-    link.href = solutionData.url || "#";
-    link.target = "_blank";
+    link.href = `/solutions/solution/${solutionData.id}`;
     link.className = "soln-link";
 
     const img = document.createElement('img');

@@ -10,7 +10,7 @@
   <body>
     <div class="container">
         <nav id = "topnav">
-            <a id = "em-logo" href="/"><img src = "images/smart_solutions/EM.jpg" alt="Empire Logo"></a>
+            <a id = "em-logo" href="/"><img src = "{{ url_for('smart-solutions-images', path='EM.jpg') }}" alt="Empire Logo"></a>
             <input class = "search-area" type="text" placeholder="Search for a Solution..">
             <a id="lgn-btn">Login</a>
         </nav>

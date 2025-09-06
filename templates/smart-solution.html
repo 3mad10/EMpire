@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EM</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/styles/smart-solution.css">
+  </head>
+  <body>
+    <div class="container">
+        <nav id = "topnav">
+            <a id = "em-logo" href="/"><img src = "{{ url_for('smart-solutions-images', path='EM.jpg') }}" alt="Empire Logo"></a>
+            <input class = "search-area" type="text" placeholder="Search for a Solution..">
+            <a id="lgn-btn">Login</a>
+        </nav>
+        <div id="content">
+            <div class="soln-section">
+                <div class="soln-name">{{ solution.name }}</div>
+                <div class="soln-shorts">
+                  {% for img in solution.images %}
+                  <img src="{{ img.url }}" alt="{{ img.alt or 'Solution Image' }}" class="short-item">
+                  {% endfor %}
+                  {% for vid in solution.videos %}
+                  <img src="{{ vid.url }}" alt="{{ vid.alt or 'Solution Image' }}" class="short-item">
+                  {% endfor %}
+                </div>
+                <div class="soln-description">{{ solution.description }}</div>
+                <div class="soln-demo"><button class="soln-demo-btn">Try Demo</button></div>
+                <div class="soln-buy"><button class="soln-buy-btn">Try Demo</button></div>
+                <div class="soln-download"><button class="soln-download-btn">Download</button></div>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

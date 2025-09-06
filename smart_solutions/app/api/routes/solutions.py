@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query, Path, status
+from fastapi import APIRouter, HTTPException, Query, Path, status, Request
 from smart_solutions.app.schemas.solution import (
     SolutionCreate,
     ImageCreate,
@@ -24,6 +24,11 @@ from uuid import UUID
 from smart_solutions.app.core.config import settings
 from sqlmodel import func, select, delete
 from smart_solutions.app.crud.user import get_user_by_id
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
+
+templates = Jinja2Templates(directory="templates")
 
 router = APIRouter(prefix="/solution", tags=["solution"])
 
@@ -47,7 +52,6 @@ Requirements:
 @router.post("/", response_model=SolutionRead,
              status_code=status.HTTP_201_CREATED)
 async def create_solution(*, session: SessionDep, solution_in: SolutionCreate, current_user: CurrentUser):
-    print("heeeereeee")
     if not solution_in.tags:
         raise HTTPException(status_code=400, detail="One or more tags must be added to the solution")
     for tag in solution_in.tags:
@@ -122,8 +126,7 @@ async def read_solutions(*, session: SessionDep,
             # Get videos for this solution (assuming you have a SolutionVideo model)
             videos_query = select(Video).where(Video.solution_id == solution.id)
             videos = session.exec(videos_query).all()
-            
-            select(User)
+
             # Create SolutionRead object with all related data
             solution_data = {
                 **solution.__dict__,
@@ -176,40 +179,17 @@ async def read_solutions(*, session: SessionDep,
                 "tags": [TagRead(**tag.__dict__) for tag in tags],
                 "images": [ImageRead(**img.__dict__) for img in images],
                 "videos": [VideoRead(**vid.__dict__) for vid in videos],
-                "owner": user.name
+                "owner": user
             }
             solutions.append(SolutionRead(**solution_data))
 
     return solutions
 
-@router.get("/{solution_id}")
-async def read_solution(*, session: SessionDep,
+@router.get("/{solution_id}", response_class=HTMLResponse)
+async def read_solution(*, request: Request, session: SessionDep,
                         solution_id: Annotated[UUID, Path()]):
-    result = session.execute(select(Solution)
-                               .join(SolutionTagLink, Solution.id == SolutionTagLink.solution_id)
-                               .join(Tag, Tag.id == SolutionTagLink.tag_id)).first()
-    if not result:
-        raise HTTPException(status_code=404, detail="Item not found")
-    # print("resultttttt : ", result)
-
-    tags_query = (
-                select(Tag)
-                .join(SolutionTagLink, Tag.id == SolutionTagLink.tag_id)
-                .where(SolutionTagLink.solution_id == solution_id)
-            )
-    tags = session.exec(tags_query).all()
-    # Get images
-    images_query = select(Image).where(Image.solution_id == solution_id)
-    images = session.exec(images_query).all()
-    # Get videos
-    videos_query = select(Video).where(Video.solution_id == solution_id)
-    videos = session.exec(videos_query).all()
-    solution_data = result[0].model_dump()
-    solution = {
-        **solution_data,
-        "tags": [TagRead(**tag.__dict__) for tag in tags],
-        "images": [ImageRead(**img.__dict__) for img in images],
-        "videos": [VideoRead(**vid.__dict__) for vid in videos]
-    }
-    # print("soln : ", solution)
-    return SolutionRead(**solution)
+    solution = session.get(Solution, solution_id)
+    return templates.TemplateResponse(
+        name="smart-solution.html",
+        context={"request": request, "solution": solution}
+    )
