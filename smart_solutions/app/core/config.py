@@ -6,7 +6,7 @@ from pydantic import (
     MySQLDsn,
     computed_field,
 )
-
+from typing import Optional
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     )
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str
-    SENTRY_DSN: HttpUrl | None = None
+    SENTRY_DSN: Optional[HttpUrl] = None
     MYSQL_SERVER: str
     MYSQL_PORT: int = 3306
     MYSQL_USER: str

@@ -1,7 +1,6 @@
 from sqlmodel import Field, SQLModel, Relationship
 import uuid
 from typing import List, Optional, TYPE_CHECKING
-
 if TYPE_CHECKING:
     from smart_solutions.app.models.user import User
 
@@ -14,12 +13,14 @@ class Image(SQLModel, table=True):
     name: str
 
 
+
 class Video(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     solution_id: uuid.UUID = Field(foreign_key="solution.id")
     solution: Optional["Solution"] = Relationship(back_populates="videos")
     url: str
     name: str
+
 
 
 class SolutionTagLink(SQLModel, table=True):

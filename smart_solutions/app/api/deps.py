@@ -55,7 +55,7 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
         )
-        print("payloaaaad : ", payload)
+        # print("payloaaaad : ", payload)
         token_data = TokenPayload(**payload)
         token_data.sub = uuid.UUID(token_data.sub)
     except (InvalidTokenError, ValidationError):

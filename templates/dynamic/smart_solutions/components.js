@@ -220,7 +220,7 @@ export function createSubSystems(subSystems, width) {
 }
 
 
-export function createMainLines(circuitLines) {
+export function createMainLines(circuitLines, glow=false) {
 
     const svg = document.getElementById("circuitSvg");
     circuitLines.forEach(LineConfig => {
@@ -234,7 +234,9 @@ export function createMainLines(circuitLines) {
         line.setAttribute("stroke", "var(--primary)");
         line.setAttribute("stroke-width", "2");
         line.setAttribute("fill", "None");
-        // line.setAttribute("filter", "url(#glow)");
+        if (glow) {
+          line.setAttribute("filter", "url(#glow)");
+        }
         svg.appendChild(line);
     });
 }
@@ -283,9 +285,9 @@ export function drawCircuit(svg, mainCircutLines) {
 
       const compCircuitLines = generateComlementaryLines();
       // Create main lines
-      createMainLines(mainCircutLines);
+      createMainLines(mainCircutLines, true);
 
-      createMainLines(compCircuitLines);
+      createMainLines(compCircuitLines, false);
 
       subSystems.forEach((val, i) => {
         const LineConfig = mainCircutLines[i];
@@ -310,7 +312,6 @@ export function drawCircuit(svg, mainCircutLines) {
         circle.setAttribute("fill", "none");  // keep center transparent
         circle.setAttribute("stroke", "var(--primary)");
         circle.setAttribute("stroke-width", "2");
-
         svg.appendChild(circle);
       });
 

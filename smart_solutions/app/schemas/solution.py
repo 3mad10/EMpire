@@ -1,31 +1,53 @@
-from pydantic import BaseModel, HttpUrl, Field
+from pydantic import BaseModel, HttpUrl, Field, field_validator
 from uuid import UUID
 from typing import List, Optional
+from smart_solutions.app.schemas.user import UserRead
 
 
 class ImageCreate(BaseModel):
-    url: HttpUrl
+    url: str
     name: str
+
+    @field_validator("url")
+    def normalize_url(cls, v):
+        HttpUrl(v)
+        return v
 
 
 class ImageRead(ImageCreate):
-    url: HttpUrl
+    url: str
     name: str
     model_config = {
         "from_attributes": True
     }
+
+    @field_validator("url")
+    def normalize_url(cls, v):
+        HttpUrl(v)
+        return v
 
 
 class VideoCreate(BaseModel):
-    url: HttpUrl
+    url: str
     name: str
+
+    @field_validator("url")
+    def normalize_url(cls, v):
+        HttpUrl(v)
+        return v
 
 
 class VideoRead(VideoCreate):
-
+    url: str
+    name: str
     model_config = {
         "from_attributes": True
     }
+
+    @field_validator("url")
+    def normalize_url(cls, v):
+        HttpUrl(v)
+        return v
 
 
 class SolutionCreate(BaseModel):
@@ -65,7 +87,7 @@ class TagRead(BaseModel):
 class SolutionRead(BaseModel):
     id: UUID
     name: str
-    owner: str
+    owner: UserRead
     description: str
     tags: List[TagRead] = []
     images: List[ImageRead] = []

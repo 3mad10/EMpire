@@ -9,14 +9,18 @@
     --primary: #00719c;
     --secondary: #0ff;
     --dark: #001f2b;
+    --accent: #00415a;
     --bg: #F0F7EE;
     --nav-height: 80px;
+    --soln-card-width: 30vw;
+    --soln-card-svg-size: 40px;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: var(--bg);
     line-height: 1.6;
+    
 }
 
 a {
@@ -63,7 +67,7 @@ a:hover {
     border: none;
     padding: 12px 35px;
     width: 60%;
-    background: #00415a;
+    background: var(--accent);
     font-size: 16px;
     border-top-right-radius: 25px;
     border-bottom-right-radius: 25px;
@@ -106,10 +110,10 @@ textarea:focus, input:focus{
     box-shadow: 0px 10px 10px #6C6F7F;
 }
 
-#hero > svg {
+#circuitSvg {
     width: 100%;
     height: 100%;
-    background: #001f2b;
+    background: var(--dark);
 }
 
 .hero-list li {
@@ -128,17 +132,38 @@ textarea:focus, input:focus{
 .hero-list a::before {
     content: '';
     display: block;
-    background: linear-gradient(to right, #0ff 50%, #00415a 50%);
+    background: linear-gradient(to right, var(--secondary) 50%, var(--accent) 50%);
     position: absolute;
-    top: 0.5vh;
-    left: -3.3vh;
-    width: 1.5vw;
-    height: 1vh;
+    top: 35%;
+    left: -28px;
+    width: 25px;
+    height: 8px;
 }
 
 .hero-list a:hover::before {
-    background: linear-gradient(to right, #00415a 50%, #0ff 50%);
+    background: linear-gradient(to right, var(--accent) 50%, var(--secondary) 50%);
   }
+
+.imprinted-text {
+    position: absolute;
+    font-size: clamp(1.2rem, 1.5vw + 0.5rem, 2.5rem);;
+    color: var(--dark);
+    text-shadow:
+    -1px -1px 0 var(--dark),
+    1px 1px 0 var(--primary);
+    /* filter: drop-shadow(1px 1px var(--dark)) drop-shadow(1px -1px var(--dark))
+    drop-shadow(-1px 1px var(--dark)) drop-shadow(-1px -1px var(--dark)); */
+}
+.imprinted-left {
+    top: 100px;
+    left: 400px;
+}
+
+.imprinted-right {
+    top: 100px;
+    right: 380px;
+}
+
 
 .sub-system {
     position: absolute;
@@ -150,7 +175,7 @@ textarea:focus, input:focus{
 .system-shorts {
     width: 10vw;
     height: 10vw;
-    background-color: #00415a;
+    background-color: var(--accent);
     overflow: hidden;
     position: relative;
     background-image: url("../images/smart_solutions/EM.jpg");
@@ -176,32 +201,16 @@ textarea:focus, input:focus{
     position: relative;
 }
 
-/* Long side line for subsystems */
-/* .solution-section::before {
-    content: '';
-    display: block;
-    position: absolute;
-    width: 2px;
-    height: 100%;
-    top: 9.5%;
-    left: 0;
-    background-color: #00719c;
-    box-shadow: 0 0 3px #0FF;
-    background: linear-gradient(to bottom, rgba(0, 255, 255, 1), rgba(0, 113, 156, 0.2));
-    pointer-events: none;
-    z-index: -1;
-} */
-
 /* Upper line for systems */
 .section-header::before {
     content: '';
     display: block;
     position: absolute;
-    top: -1.2vh;
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: #00719c;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    /* background-color: #00719c; */
     box-shadow: 0 0 10px #0FF;
 }
 
@@ -210,10 +219,10 @@ textarea:focus, input:focus{
     content: '';
     display: block;
     position: absolute;
-    top: 6.5vh;
     left: 0;
     width: 100%;
     height: 2px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
     background-color: #00719c;
     box-shadow: 0 0 10px #0FF;
 }
@@ -230,56 +239,76 @@ textarea:focus, input:focus{
     font-size: 1.9rem;
 }
 
-/* .sub-solution-header::before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 2vh;
-    left: -1vw;
-    width: 1vw;
-    height: 3px;
-    background-color: #00719c;
-    box-shadow: 0 0 10px #0FF;
-} */
+.sub-soln-dot {
+    margin-top: 1.5vh;
+}
 
+.soln-card-bookmark {
+    width: var(--soln-card-svg-size);
+    height: var(--soln-card-svg-size);
+    position: absolute;
+    cursor: pointer;
+    top: 20px;
+    right: 20px;
+    z-index: 1;
+}
 
 .sub-solutions-container {
     display: flex;
-    gap: 1rem; /* spacing between cards */
-    overflow-x: auto; /* enable horizontal scrolling */
-    padding: 1rem;
-    scroll-snap-type: x mandatory; /* optional: snap effect */
+    position: relative;
+    gap: 1rem; 
+    overflow-x: auto; 
+    scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
 }
 
 .sub-solutions-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
 }
 
-
 .scroll-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  padding: 8px;
-  z-index: 1;
+    background: transparent;
+    border: 0px solid var(--accent);
+    border-right: 2px;
+    height: 30%;
+    border-radius: 0px;
+    padding: 24px 20px;
+    cursor: pointer;
+    font-size: 50px;
+    color: var(--accent);
+    box-shadow: 2px 0 6px var(--accent);
+    transition: all 0.3s ease;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.scroll-btn:hover {
+  color: #0ff; /* better contrast on hover */
+  box-shadow: 0 0 5px #0ff;
+}
+
+.scroll-btn.left {
+    left: 5px;
+}
+
+.scroll-btn.right {
+    right: 5px;
 }
 
 .soln-card {
-    flex: 0 0 auto; /* prevent shrinking & make cards stay in row */
-    scroll-snap-align: start; /* optional: snap to this card */
-    width: 40vw;
-    height: 30vw;
+    flex: 0 0 auto;
+    width: var(--soln-card-width);
     overflow: hidden;
     position: relative;
     font-size: 1.5rem;
     color:#F0F7EE;
-    background-color: #00719c;
+    background-color: var(--accent);
     border-radius: 10px;
-    box-shadow: 0 3px 6px 0 #00415a;
+    box-shadow: 0 3px 6px 0 var(--accent);
     overflow-wrap: break-word; /* Or word-wrap: break-word; for older browsers */
 }
 
@@ -288,12 +317,19 @@ textarea:focus, input:focus{
     position: relative;
 }
 
-.soln-card-shorts img {
-    width: 100%;
-    aspect-ratio: 1 / 1; /* Sets a square aspect ratio */
-    object-fit: cover; /* Covers the square area, cropping if needed */
-    transition: opacity 0.5s;
-    opacity: 1;
+.soln-card-shorts {
+  position: relative;
+  width: 100%;            /* fills parent card width */
+  aspect-ratio: 1 / 1;    /* force square shape */
+  overflow: hidden;       /* hide overflow if image crops */
+  border-radius: 10px;    /* optional, to match card rounding */
+}
+
+.soln-card-shorts a img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;      /* fill the square, crop if needed */
+  display: block;
 }
 
 .soln-owner {
@@ -302,7 +338,6 @@ textarea:focus, input:focus{
 }
 
 .soln-description {
-    width: 75%;
     margin-top: 1rem;
     font-size: 1rem;
     display: -webkit-box;
@@ -312,16 +347,60 @@ textarea:focus, input:focus{
     text-overflow: ellipsis;
 }
 
-
-.download-icon {
-    fill: #888;
-    transition: fill 0.3s, filter 0.3s;
+.soln-usecase-container {
+    display: flex;
+    margin-top: 10px;
+    font-size: 1rem;
+    justify-content: flex-start;
+    gap: 20px;
 }
 
+.soln-usecase {
+    color: var(--secondary);
+    background-color: var(--accent);
+    padding: 2px 4px;
+    border: 2px solid var(--secondary);
+    border-radius: 5px;
+}
+
+.download-icon {
+    width: var(--soln-card-svg-size);
+    height: var(--soln-card-svg-size);
+    margin-top: 1rem;
+    transition: fill 0.3s, filter 0.3s;
+    stroke: var(--dark);
+    fill: var(--primary);
+}
+.soln-main-info{
+    display: flex;
+    gap: 2rem;
+}
+
+.soln-rating-btn {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transform: translateY(15%);
+}
+
+.soln-rating-btn:hover {
+    fill: var(--secondary);
+    filter: drop-shadow(0 0 5px #0ff);
+}
+
+.soln-rating-number {
+    font-size: 1.5rem;
+}
+.soln-rating-container svg {
+    width: 30px;
+    height: 30px;
+    stroke: var(--primary);
+}
 .icon-container:hover .download-icon {
-    fill: #0ff; /* change color */
-    filter: drop-shadow(0 0 3px #0ff); /* glow effect */
-    stroke: #0ff;   
+    filter: drop-shadow(0 0 3px var(--secondary)); /* glow effect */
+    stroke: var(--secondary);   
 }
 
 .icon-dropdown {
@@ -330,9 +409,8 @@ textarea:focus, input:focus{
   background: none;
   border-left: 1px solid #0ff;
   list-style: none;
-  margin: 0;
   padding: 0.5rem;
-  top: 2.5rem; 
+  top: 2.5rem;
   left: 0;
 
 }
@@ -364,21 +442,6 @@ textarea:focus, input:focus{
     opacity: 90%;
 }
 
-.soln-card-shorts {
-    position: relative;
-    width: 100%;
-}
-.video-switch-btn {
-    position: absolute;
-    border: none;
-    background: none;
-    cursor: pointer;
-    margin: 0;
-    padding: 0;
-    right: 0;
-    bottom: 0vh;
-}
-
 .soln-card-btn {
     position: absolute;
     margin: 0;
@@ -386,11 +449,6 @@ textarea:focus, input:focus{
     border: none;
     background: none;
     cursor: pointer;
-}
-
-.video-switch-btn {
-    right: 10px;
-    bottom: 0.6vh;
 }
 
 .img-switch-btn {
@@ -401,7 +459,6 @@ textarea:focus, input:focus{
 .soln-card-btn {
     opacity: 0;
     transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
-
 }
 
 .soln-card:hover .soln-card-btn {
@@ -422,32 +479,6 @@ textarea:focus, input:focus{
   transition: transform 0.2s ease-in-out;
 }
 
-.scroll-btn {
-  background: transparent;
-  border: 2px solid #00719c;
-  border-radius: 6px;
-  padding: 24px 12px;
-  cursor: pointer;
-  font-size: 24px;
-  color: #00719c;
-  box-shadow: 0 0 6px #00719c; /* more neon-glow style */
-  transition: all 0.3s ease;
-  position: absolute;
-  top: 45%;
-}
-
-.scroll-btn:hover {
-  color: #0ff; /* better contrast on hover */
-  box-shadow: 0 0 5px #0ff;
-}
-
-.scroll-btn.left {
-    left: 5px;
-}
-
-.scroll-btn.right {
-    right: 5px;
-}
 
 .sub-solution-header {
     position: relative;

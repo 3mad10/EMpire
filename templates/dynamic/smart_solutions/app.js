@@ -56,6 +56,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const systemsSection = document.getElementById("content");
     createSystemsSections(systemsSection);
+
+    const heroSection = document.getElementById("hero");
+    const imprintedDivLeft = document.createElement("div");
+    imprintedDivLeft.innerText = "AI Solutions"
+    imprintedDivLeft.setAttribute("class", "imprinted-text imprinted-left");
+    heroSection.appendChild(imprintedDivLeft);
+
+    const imprintedDivRight = document.createElement("div");
+    imprintedDivRight.innerText = "For Everything"
+    imprintedDivRight.setAttribute("class", "imprinted-text imprinted-right");
+    heroSection.appendChild(imprintedDivRight);
     
     const mainCircutLines = getMainCircuitLines();
     drawCircuit(svg, mainCircutLines);

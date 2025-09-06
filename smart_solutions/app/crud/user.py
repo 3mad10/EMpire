@@ -1,5 +1,4 @@
 import uuid
-from typing import Any
 from sqlmodel import Session, select
 from sqlalchemy import text
 from smart_solutions.app.models.user import User

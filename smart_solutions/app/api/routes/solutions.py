@@ -16,7 +16,7 @@ from smart_solutions.app.models.solution import (
     SolutionTagLink
 )
 from smart_solutions.app.models.user import User
-from smart_solutions.app.schemas.user import UserPublic
+from smart_solutions.app.schemas.user import UserPublic, UserRead
 from smart_solutions.app.api.deps import SessionDep, CurrentUser
 from sqlalchemy import text
 from typing import Annotated
@@ -64,9 +64,9 @@ async def create_solution(*, session: SessionDep, solution_in: SolutionCreate, c
     )
 
     if solution_in.images:
-        solution.images = [Image(**img.dict()) for img in solution_in.images]
+        solution.images = [Image(**img.model_dump()) for img in solution_in.images]
     if solution_in.videos:
-        solution.videos = [Video(**vid.dict()) for vid in solution_in.videos]
+        solution.videos = [Video(**vid.model_dump()) for vid in solution_in.videos]
     if solution_in.tags:
         tags = []
         for tag in solution_in.tags:
@@ -88,9 +88,10 @@ async def create_solution(*, session: SessionDep, solution_in: SolutionCreate, c
         id=solution.id,
         name=solution.name,
         description=solution.description,
+        owner=UserRead.model_validate(current_user),
         tags=[TagRead(name=tag.name) for tag in solution.tags],
-        images=[ImageRead(url=img.url, name=img.name) for img in solution.images],
-        videos=[VideoRead(url=vid.url, name=vid.name) for vid in solution.videos]
+        images=[ImageRead.model_validate(img) for img in solution.images],
+        videos=[VideoRead.model_validate(vid) for vid in solution.videos]
     )
 
 @router.get("/", response_model=list[SolutionRead])

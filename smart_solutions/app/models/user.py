@@ -1,7 +1,7 @@
 from sqlmodel import Field, SQLModel, Relationship
 import uuid
 from pydantic import EmailStr
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from smart_solutions.app.models.solution import Solution
@@ -23,7 +23,7 @@ class User(SQLModel, table=True):
 
 
 class TokenPayload(SQLModel):
-    sub: str | None = None
+    sub: Optional[str] = None
 
 
 # JSON payload containing access token
